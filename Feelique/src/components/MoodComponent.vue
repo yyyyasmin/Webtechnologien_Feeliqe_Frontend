@@ -13,8 +13,9 @@ interface Mood {
 }
 
 interface MoodEntryDto {
+  id?: number
   mood: string
-  createdAt: string
+  time: string
 }
 
 /* =======================
@@ -79,9 +80,9 @@ async function loadSavedMoods() {
 async function saveMoodToBackend(moodName: string) {
   if (!baseUrl) return
 
-  const payload: MoodEntryDto = {
+  const payload = {
     mood: moodName,
-    createdAt: new Date().toISOString()
+    time: new Date().toISOString()
   }
 
   await axios.post(`${baseUrl}/moods`, payload)
