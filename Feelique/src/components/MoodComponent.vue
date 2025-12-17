@@ -147,7 +147,7 @@ onMounted(() => {
         <li v-for="(entry, index) in savedMoods" :key="index">
           {{ emojiMap[entry.mood] ?? '❓' }}
           {{ entry.mood }} –
-          {{ new Date(entry.createdAt).toLocaleString() }}
+          {{ new Date(entry.time).toLocaleString() }}
         </li>
       </ul>
     </div>
