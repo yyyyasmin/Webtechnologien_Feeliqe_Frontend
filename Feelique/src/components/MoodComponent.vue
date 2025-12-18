@@ -156,80 +156,121 @@ onMounted(() => {
 
 <style scoped>
 .mood-tracker {
-  max-width: 500px;
-  margin: 0 auto;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-  color: #222;
+  max-width: 800px; /* Von 600px auf 800px erhöht */
+  margin: 100px auto 40px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  color: #e2e8f0;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.mood-tracker h2 {
+  text-align: center;
+  color: #c4b5fd;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(139, 92, 246, 0.4);
 }
 
 .subtitle {
   text-align: center;
-  color: #444;
-  margin-bottom: 20px;
+  color: #cbd5e1;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
 }
 
 .mood-list {
   list-style: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 Spalten */
+  gap: 15px;
 }
 
 .mood-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 15px;
-  margin: 10px 0;
-  background: #f4f4f4;
-  border-radius: 8px;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #2d2463 0%, #3d2f7a 100%);
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  min-height: 120px;
 }
 
 .mood-item:hover {
-  background: #e0f2ff;
+  background: linear-gradient(135deg, #3d2f7a 0%, #4c1d95 100%);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  border-color: rgba(139, 92, 246, 0.5);
 }
 
 .mood-item.selected {
-  background: #d1f0ff;
-  border: 2px solid #4da3ff;
-  pointer-events: none; /* 🔒 physisch nicht klickbar */
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+  border: 2px solid #a78bfa;
+  box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6);
+  pointer-events: none;
+  transform: scale(1.05);
 }
 
 .mood-emoji {
-  font-size: 32px;
-  margin-right: 15px;
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .mood-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
+  color: #e2e8f0;
+  text-align: center;
 }
 
 .selected-mood {
-  margin-top: 20px;
-  padding: 15px;
-  background: #dff1ff;
-  border-radius: 8px;
+  margin-top: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+  border-radius: 12px;
   text-align: center;
+  font-size: 1.1rem;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.selected-mood strong {
+  color: #c4b5fd;
+  font-size: 1.2rem;
 }
 
 .saved-hint {
-  margin-top: 15px;
-  padding: 12px;
-  background: #e6ffe6;
-  border-radius: 6px;
+  margin-top: 20px;
+  padding: 15px;
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  border-radius: 10px;
   text-align: center;
   font-weight: bold;
-  color: #1a7f1a;
+  color: #d1fae5;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
 }
 
 .saved-moods {
-  margin-top: 30px;
-  padding: 20px;
-  background: #eee;
-  border-radius: 8px;
+  margin-top: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.saved-moods h3 {
+  color: #a78bfa;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
 }
 
 .saved-moods ul {
@@ -238,7 +279,49 @@ onMounted(() => {
 }
 
 .saved-moods li {
-  padding: 6px 0;
-  border-bottom: 1px solid #ccc;
+  padding: 12px;
+  margin: 8px 0;
+  background: rgba(30, 27, 75, 0.5);
+  border-radius: 8px;
+  border-left: 3px solid #8b5cf6;
+  color: #cbd5e1;
+  transition: background 0.2s;
+}
+
+.saved-moods li:hover {
+  background: rgba(30, 27, 75, 0.8);
+}
+
+@media (max-width: 768px) {
+  .mood-tracker {
+    margin: 80px 20px 40px;
+    padding: 25px;
+    max-width: 100%; /* Auf kleineren Bildschirmen volle Breite nutzen */
+  }
+
+  .mood-list {
+    grid-template-columns: repeat(3, 1fr); /* 3 Spalten auf Tablet */
+    gap: 10px;
+  }
+
+  .mood-item {
+    padding: 15px;
+    min-height: 100px;
+  }
+
+  .mood-emoji {
+    font-size: 36px;
+  }
+
+  .mood-name {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mood-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 Spalten auf Handy */
+    gap: 8px;
+  }
 }
 </style>
