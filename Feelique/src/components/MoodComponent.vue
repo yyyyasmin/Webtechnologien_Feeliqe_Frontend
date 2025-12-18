@@ -16,6 +16,7 @@ interface MoodEntryDto {
   id?: number
   mood: string
   time: string
+  note?: string
 }
 
 /* =======================
@@ -56,6 +57,7 @@ const moods = ref<Mood[]>([
 const selectedMood = ref<Mood | null>(null)
 const savedMoods = ref<MoodEntryDto[]>([])
 const hasSavedMood = ref(false)
+const note = ref('')
 
 /* =======================
    Backend URL
@@ -82,7 +84,8 @@ async function saveMoodToBackend(moodName: string) {
 
   const payload = {
     mood: moodName,
-    time: new Date().toISOString()
+    time: new Date().toISOString(),
+    note: note.value
   }
 
   await axios.post(`${baseUrl}/moods`, payload)
@@ -92,15 +95,18 @@ async function saveMoodToBackend(moodName: string) {
 /* =======================
    Klick → EINMAL FINAL
 ======================= */
-const selectMood = async (mood: Mood) => {
+const selectMood = (mood: Mood) => {
   if (hasSavedMood.value) return
-
-  // 🔒 Zustand sofort fixieren
-  hasSavedMood.value = true
   selectedMood.value = mood
+}
+
+// neuer Helper:
+const saveSelectedMood = async () => {
+  if (!selectedMood.value || hasSavedMood.value) return
 
   try {
-    await saveMoodToBackend(mood.name)
+    await saveMoodToBackend(selectedMood.value.name)
+    hasSavedMood.value = true   // jetzt wirklich „fixiert“
   } catch (e) {
     console.error(e)
   }
@@ -136,7 +142,20 @@ onMounted(() => {
       Du hast gewählt:
       <strong>{{ selectedMood.emoji }} {{ selectedMood.name }}</strong>
     </div>
+    <!-- Notizfeld + Speichern-Button -->
+    <div v-if="selectedMood && !hasSavedMood" class="note-section">
+      <label for="note">Notiz (optional):</label>
+      <textarea
+        id="note"
+        v-model="note"
+        rows="3"
+        placeholder="Möchtest du etwas zu deiner Stimmung aufschreiben?"
+      ></textarea>
 
+      <button @click="saveSelectedMood" class="save-button">
+        Stimmung & Notiz speichern
+      </button>
+    </div>
     <div v-if="hasSavedMood" class="saved-hint">
       ✅ Deine Stimmung wurde gespeichert
     </div>
@@ -148,6 +167,9 @@ onMounted(() => {
           {{ emojiMap[entry.mood] ?? '❓' }}
           {{ entry.mood }} –
           {{ new Date(entry.time).toLocaleString() }}
+          <span v-if="entry.note" class="note-text">
+    <br>💬 {{ entry.note }}
+  </span>
         </li>
       </ul>
     </div>
@@ -323,5 +345,69 @@ onMounted(() => {
     grid-template-columns: repeat(2, 1fr); /* 2 Spalten auf Handy */
     gap: 8px;
   }
+}
+
+
+.note-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.note-section label {
+  display: block;
+  color: #a78bfa;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.note-section textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(30, 27, 75, 0.5);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.note-section textarea::placeholder {
+  color: #94a3b8;
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.save-button:hover {
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.note-text {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 6px;
+  font-style: italic;
+  color: #cbd5e1;
+  border-left: 2px solid #8b5cf6;
 }
 </style>
